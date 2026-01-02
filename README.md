@@ -60,10 +60,88 @@ agentic_ai_system/
 ├── config/ → Environment & settings
 
 ````
-
-Each folder has **one clear responsibility**.
+![block digram](snap_2.png)
 
 ---
+## Logical Flow 
+
+---
+
+```mermaid
+graph TB
+    UI[UI / Web App / Corporate App] -->|1. User Message| API[FastAPI /chat Endpoint]
+    
+    API -->|2. Transfer Input| Router[Supervisor Router]
+    
+    Router -->|3. Store Context| Memory[Memory Manager]
+    Memory --> ChatRepo[Chat Repository]
+    ChatRepo --> ChatTable[(Chat Sessions Table)]
+    ChatTable --> Database[(Database)]
+    
+    ChatTable -->|Past Context| LLM[LLM Client]
+    Router -->|4. Ask: HR or IT?| LLM
+    LLM -->|5. Decision: HR/IT| Router
+    
+    Router -->|6a. Route to HR| HRAgent[HR Agent]
+    Router -->|6b. Route to IT| ITAgent[IT Agent]
+    
+    HRAgent -->|7a. Extract params| LLM
+    ITAgent -->|7b. Extract params| LLM
+    
+    LLM -->|8a. Parsed HR Data| HRAgent
+    LLM -->|8b. Parsed IT Data| ITAgent
+    
+    HRAgent -->|9a. Call with params| HRTool[HR Tool]
+    ITAgent -->|9b. Call with params| ITTool[IT Tool]
+    
+    HRTool -->|10a. Save employee| EmployeeRepo[Employee Repository]
+    ITTool -->|10b. Save ticket| ITRepo[IT Ticket Repository]
+    
+    EmployeeRepo --> EmployeeTable[(Employees Table)]
+    ITRepo --> ITTable[(IT Tickets Table)]
+    EmployeeTable --> Database
+    ITTable --> Database
+    
+    EmployeeRepo -->|11a. Success| HRTool
+    ITRepo -->|11b. Success| ITTool
+    
+    HRTool -->|12a. Return message| HRAgent
+    ITTool -->|12b. Return message| ITAgent
+    
+    HRAgent -->|13a. Response| Router
+    ITAgent -->|13b. Response| Router
+    
+    Router -->|Save Response| ChatTable
+    
+    Router -->|14. Final response| API
+    API -->|15. Response to user| UI
+    
+    style UI fill:#e1f5ff,stroke:#333,stroke-width:3px,color:#000
+    style API fill:#fff3e0,stroke:#333,stroke-width:3px,color:#000
+    style Router fill:#ffe0b2,stroke:#333,stroke-width:3px,color:#000
+    style Memory fill:#f3e5f5,stroke:#333,stroke-width:2px,color:#000
+    style LLM fill:#e1bee7,stroke:#333,stroke-width:3px,color:#000
+    style HRAgent fill:#c5e1a5,stroke:#333,stroke-width:2px,color:#000
+    style ITAgent fill:#c5e1a5,stroke:#333,stroke-width:2px,color:#000
+    style HRTool fill:#fff9c4,stroke:#333,stroke-width:2px,color:#000
+    style ITTool fill:#fff9c4,stroke:#333,stroke-width:2px,color:#000
+    style EmployeeRepo fill:#b3e5fc,stroke:#333,stroke-width:2px,color:#000
+    style ITRepo fill:#b3e5fc,stroke:#333,stroke-width:2px,color:#000
+    style ChatRepo fill:#b3e5fc,stroke:#333,stroke-width:2px,color:#000
+    style EmployeeTable fill:#c8e6c9,stroke:#333,stroke-width:2px,color:#000
+    style ITTable fill:#c8e6c9,stroke:#333,stroke-width:2px,color:#000
+    style ChatTable fill:#c8e6c9,stroke:#333,stroke-width:2px,color:#000
+    style Database fill:#a5d6a7,stroke:#333,stroke-width:4px,color:#000
+```
+---
+
+## Agentic AI System Architecture 
+
+![block digram](snap_1.png)
+
+
+
+
 
 ## 4. `tools/` Folder — Business Actions Layer
 
