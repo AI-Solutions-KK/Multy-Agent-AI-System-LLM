@@ -46,7 +46,7 @@ LLM replaces *if/else on language*, not *system logic*.
 
 ---
 
-## 3. Folder-Level Architecture Overview
+## 3. Folder-Level Structure  Overview
 
 ````
 agentic_ai_system/
